@@ -4,7 +4,7 @@ import Header from './Header';
 import BunnyCard from './BunnyCard';
 import Filter from './Filter';
 
-const Home = () => {
+const UserHome = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -37,4 +37,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default UserHome;
