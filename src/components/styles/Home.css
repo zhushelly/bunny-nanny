@@ -32,19 +32,21 @@ html, body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 100px 100px;
+    padding: 100px 20px; /* Adjust padding for better responsiveness */
   }
   
   .hero-section h1 {
     font-size: 2.5em;
     margin-bottom: 20px;
     color: white;
+    text-align: center; /* Center text for better alignment */
   }
   
   .hero-section p {
     font-size: 1.5em;
     margin-bottom: 30px;
     color: white;
+    text-align: center; /* Center text for better alignment */
   }
   
   .search-form {
@@ -70,6 +72,7 @@ html, body {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    box-sizing: border-box; /* Ensure padding is included in the element's total width and height */
   }
   
   button {
