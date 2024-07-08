@@ -2,18 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { auth, db, serverTimestamp } from '../firebase';
 import Header from './Header';
 import './styles/Home.css';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { collection, addDoc } from 'firebase/firestore';
 
 const UserHome = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    whenAway: 'boarding',
+    whenAway: '',
     location: '',
     dropOff: '',
     pickUp: '',
   });
+
+  const navigate = useNavigate(); // Use the useNavigate hook
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -51,6 +53,7 @@ const UserHome = () => {
       });
       console.log('Document written with ID: ', docRef.id);
       alert('Booking request submitted successfully!');
+      navigate('/search-results'); // Navigate to the search-results route
     } catch (error) {
       console.error('Error adding document: ', error);
       alert('There was an error submitting your request.');

@@ -5,6 +5,7 @@ import UserHome from "./components/UserHome";
 import SignUp from "./components/SignUp";
 import Login from "./components/Login";
 import SignUpSuccess from "./components/SignUpSuccess";
+import SearchResult from "./components/SearchResult";
 import { auth } from "./firebase"; // Make sure this is the correct path to your firebase configuration
 
 const PrivateRoute = ({ element: Component, ...rest }) => {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup-success" element={<SignUpSuccess />} />
           <Route path="/user-home" element={<PrivateRoute element={UserHome} />} />
+          <Route path="/search-results" element={<SearchResult />} />
         </Routes>
       </div>
     </Router>
