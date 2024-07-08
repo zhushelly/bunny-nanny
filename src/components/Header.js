@@ -1,7 +1,7 @@
 import React from 'react';
 import { auth } from '../firebase';
 import { Link, useNavigate } from 'react-router-dom';
-import './Header.css'; // Assuming you save the CSS in a file named Header.css
+import './styles/Header.css'; // Assuming you save the CSS in a file named Header.css
 
 const Header = ({ user }) => {
   const navigate = useNavigate();
