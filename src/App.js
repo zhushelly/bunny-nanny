@@ -1,8 +1,16 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Home from "./components/Home";
+import UserHome from "./components/UserHome";
 import SignUp from "./components/SignUp";
 import Login from "./components/Login";
+import SignUpSuccess from "./components/SignUpSuccess";
+import { auth } from "./firebase"; // Make sure this is the correct path to your firebase configuration
+
+const PrivateRoute = ({ element: Component, ...rest }) => {
+  const isAuthenticated = auth.currentUser !== null;
+  return isAuthenticated ? <Component {...rest} /> : <Navigate to="/login" />;
+};
 
 function App() {
   return (
@@ -12,6 +20,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup-success" element={<SignUpSuccess />} />
+          <Route path="/user-home" element={<PrivateRoute element={UserHome} />} />
         </Routes>
       </div>
     </Router>

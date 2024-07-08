@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/home");
+      navigate("/user-home");
     } catch (error) {
       console.error("Error logging in:", error);
     }
@@ -39,7 +39,9 @@ const Login = () => {
           fullWidth
           margin="normal"
         />
-        <Button type="submit" variant="contained" color="primary">Login</Button>
+        <Button type="submit" variant="contained" color="primary">
+          Login
+        </Button>
       </form>
     </Container>
   );

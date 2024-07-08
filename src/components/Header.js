@@ -1,15 +1,26 @@
 import React from 'react';
 import { auth } from '../firebase';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Header = ({ user }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   return (
     <header>
       <div>
         {user ? (
           <>
             <span>User ID: {user?.uid}</span>
-            <button onClick={() => auth.signOut()}>Logout</button>
+            <button onClick={handleLogout}>Logout</button>
           </>
         ) : (
           <>
