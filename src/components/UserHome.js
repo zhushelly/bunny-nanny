@@ -6,6 +6,7 @@ import { Navigate } from 'react-router-dom';
 
 const UserHome = () => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -14,12 +15,19 @@ const UserHome = () => {
       } else {
         setUser(null);
       }
+      setLoading(false); // Set loading to false after auth state is checked
     });
 
     return () => unsubscribe();
   }, []);
 
+  if (loading) {
+    // Add a loading state to avoid redirect before user state is set
+    return <div>Loading...</div>;
+  }
+
   if (!user) {
+    console.log("hey");
     return <Navigate to="/" />;
   }
 
