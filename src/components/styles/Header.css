@@ -9,6 +9,8 @@
   font-weight: 400;
   padding-top: 20px;
   padding-bottom: 20px;
+  max-width: 1400px; /* Adjust as needed */
+
 }
 
 .header-left,
