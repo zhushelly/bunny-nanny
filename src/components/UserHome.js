@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { auth, db, firebase } from '../firebase'; // Adjusted import to include firebase
+import { auth, db, serverTimestamp } from '../firebase';
 import Header from './Header';
 import './styles/Home.css';
-import { Navigate } from 'react-router-dom'; 
-
+import { Navigate } from 'react-router-dom';
+import { collection, addDoc } from 'firebase/firestore';
 
 const UserHome = () => {
   const [user, setUser] = useState(null);
@@ -41,12 +41,15 @@ const UserHome = () => {
       return;
     }
 
+    console.log('Form data to be sent:', formData);
+
     try {
-      await db.collection('bookings').add({
+      const docRef = await addDoc(collection(db, 'bookings'), {
         ...formData,
         userId: user.uid,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: serverTimestamp(),
       });
+      console.log('Document written with ID: ', docRef.id);
       alert('Booking request submitted successfully!');
     } catch (error) {
       console.error('Error adding document: ', error);
@@ -55,7 +58,6 @@ const UserHome = () => {
   };
 
   if (loading) {
-    // Add a loading state to avoid redirect before user state is set
     return <div>Loading...</div>;
   }
 
