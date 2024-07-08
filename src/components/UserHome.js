@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { auth } from '../firebase';
+import { auth, db, firebase } from '../firebase'; // Adjusted import to include firebase
 import Header from './Header';
 import './styles/Home.css';
 import { Navigate } from 'react-router-dom'; 
 
+
 const UserHome = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    whenAway: 'boarding',
+    location: '',
+    dropOff: '',
+    pickUp: '',
+  });
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -21,13 +28,38 @@ const UserHome = () => {
     return () => unsubscribe();
   }, []);
 
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.location || !formData.dropOff || !formData.pickUp) {
+      alert('Please fill in all fields.');
+      return;
+    }
+
+    try {
+      await db.collection('bookings').add({
+        ...formData,
+        userId: user.uid,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      alert('Booking request submitted successfully!');
+    } catch (error) {
+      console.error('Error adding document: ', error);
+      alert('There was an error submitting your request.');
+    }
+  };
+
   if (loading) {
     // Add a loading state to avoid redirect before user state is set
     return <div>Loading...</div>;
   }
 
   if (!user) {
-    console.log("hey");
     return <Navigate to="/" />;
   }
 
@@ -40,22 +72,38 @@ const UserHome = () => {
             <h1>Loving pet care in your neighborhood!</h1>
             <p>Book trusted bunny sitters.</p>
             <div className="search-form">
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label htmlFor="when-away">For When You're Away:</label>
-                  <select id="when-away">
+                  <label htmlFor="whenAway">For When You're Away:</label>
+                  <select id="whenAway" value={formData.whenAway} onChange={handleInputChange}>
                     <option value="boarding">Boarding</option>
                     <option value="drop-in-visits">Drop-In Visits</option>
                   </select>
                 </div>
                 <div className="form-group">
                   <label htmlFor="location">Your location: </label>
-                  <input type="text" id="location" name="location" placeholder="Zip code or Address" />
+                  <input
+                    type="text"
+                    id="location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    placeholder="Zip code or Address"
+                  />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="drop-off">For these days:</label>
-                  <input type="date" id="drop-off" name="drop-off" />
-                  <input type="date" id="pick-up" name="pick-up" />
+                  <label htmlFor="dropOff">For these days:</label>
+                  <input
+                    type="date"
+                    id="dropOff"
+                    value={formData.dropOff}
+                    onChange={handleInputChange}
+                  />
+                  <input
+                    type="date"
+                    id="pickUp"
+                    value={formData.pickUp}
+                    onChange={handleInputChange}
+                  />
                 </div>
                 <button type="submit">Search</button>
               </form>
