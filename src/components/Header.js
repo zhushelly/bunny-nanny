@@ -1,7 +1,7 @@
 import React from 'react';
 import { auth } from '../firebase';
 import { Link, useNavigate } from 'react-router-dom';
-import './styles/Header.css'; // Assuming you save the CSS in a file named Header.css
+import './styles/Header.css'; 
 
 const Header = ({ user }) => {
   const navigate = useNavigate();
@@ -17,13 +17,11 @@ const Header = ({ user }) => {
 
   return (
     <header className="header">
+
       <div className="header-left">
         <a href="/register">
-          <img src="link-to-register-icon.png" alt="Register a Bunny" />
+            <p>Become a nanny</p>
         </a>
-      </div>
-      <div className="header-center">
-        Become a Nanny
       </div>
       <div className="header-right">
         {user ? (
