@@ -124,7 +124,7 @@ const NannyForm = () => {
 
           <div className="form-group">
             <label>Household members authorized in emergency:</label>
-            <textarea name="householdMembers" value={formData.householdMembers} onChange={handleChange}></textarea>
+            <input type = "text" name="householdMembers" value={formData.householdMembers} onChange={handleChange}/>
           </div>
 
           <div className="form-group">
@@ -139,7 +139,7 @@ const NannyForm = () => {
 
           <div className="form-group">
             <label>Pet care experience:</label>
-            <textarea name="petCareExperienceDetails" value={formData.petCareExperienceDetails} onChange={handleChange} minLength="25"></textarea>
+            <input type="text" name="petCareExperienceDetails" value={formData.petCareExperienceDetails} onChange={handleChange} minLength="25"/>
           </div>
 
           <div className="form-group">
