@@ -1,14 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
   background-color: rgb(251, 221, 225);
-  font-family: Averta;
-  font-size: 16px;
-  font-weight: 400;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  padding-top: 5px;
+  padding-bottom: 5px;
   width: 1400px; /* Adjust as needed */
 
 }
@@ -22,6 +25,8 @@
 .header-left {
   display: flex;
   justify-content: flex-start;
+  align-items: start;
+  margin-left: 15px;
 }
 
 .header-center {
@@ -61,19 +66,19 @@
 .login-signup p.login:hover,
 .login-signup p.login:active {
   text-decoration: underline; /* Optional: to give it a link-like appearance */
-  color: darkblue;
+  color: black;
 }
 
 .login-signup p.signup:hover,
 .login-signup p.signup:active {
   text-decoration: underline; /* Optional: to give it a link-like appearance */
-  color: darkblue;
+  color: black;
 }
 
 .nanny:hover {
   text-decoration: underline; /* Optional: to give it a link-like appearance */
   cursor: pointer;
-  color: darkblue; /* Adjust color as needed */
+  color: black; /* Adjust color as needed */
 }
 
 
