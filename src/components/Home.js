@@ -37,8 +37,8 @@ const Home = () => {
                 <form>
 
                   <div className="form-group">
-                    <label htmlFor="when-away">For When You're Away:</label>
-                    <select id="when-away">
+                    <label htmlFor="service-type">Service type:</label>
+                    <select id="service-type">
                       <option value="boarding">Boarding</option>
                       <option value="drop-in-visits">Drop-In Visits</option>
                     </select>

@@ -76,15 +76,18 @@ const UserHome = () => {
           <section className="hero-section">
             <h1>Loving pet care in your neighborhood!</h1>
             <p>Book trusted bunny sitters.</p>
+
             <div className="search-form">
               <form onSubmit={handleSubmit}>
+
                 <div className="form-group">
-                  <label htmlFor="whenAway">For When You're Away:</label>
-                  <select id="whenAway" value={formData.whenAway} onChange={handleInputChange}>
+                  <label htmlFor="service-type">Service type:</label>
+                  <select id="service-type" value={formData.whenAway} onChange={handleInputChange}>
                     <option value="boarding">Boarding</option>
                     <option value="drop-in-visits">Drop-In Visits</option>
                   </select>
                 </div>
+
                 <div className="form-group">
                   <label htmlFor="location">Your location: </label>
                   <input
@@ -95,6 +98,7 @@ const UserHome = () => {
                     placeholder="Zip code or Address"
                   />
                 </div>
+
                 <div className="form-group">
                   <label htmlFor="dropOff">For these days:</label>
                   <input
@@ -110,6 +114,7 @@ const UserHome = () => {
                     onChange={handleInputChange}
                   />
                 </div>
+                
                 <button type="submit">Search</button>
               </form>
             </div>
