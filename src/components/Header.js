@@ -22,7 +22,7 @@ const Header = ({ user }) => {
   return (
     <header className="header">
       <div className="header-left">
-          <p className = "nanny" onClick={() => handleNavigate('/login')}>Become a Nanny</p>
+          <p className = "nanny" onClick={() => handleNavigate('/become-a-nanny')}>Become a Nanny</p>
       </div>
       <div className="header-right">
         {user ? (
