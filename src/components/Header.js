@@ -1,6 +1,6 @@
 import React from 'react';
 import { auth } from '../firebase';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './styles/Header.css'; 
 
 const Header = ({ user }) => {
@@ -15,13 +15,14 @@ const Header = ({ user }) => {
     }
   };
 
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+
   return (
     <header className="header">
-
       <div className="header-left">
-        <a href="/register">
-            <p>Become a nanny</p>
-        </a>
+          <p className = "nanny" onClick={() => handleNavigate('/login')}>Become a nanny</p>
       </div>
       <div className="header-right">
         {user ? (
@@ -31,10 +32,10 @@ const Header = ({ user }) => {
           </>
         ) : (
           <span className="login-signup">
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Sign Up</Link>
-          </>
+            <>
+              <p className="login" onClick={() => handleNavigate('/login')}>Login</p>
+              <p className="signup" onClick={() => handleNavigate('/signup')}>Sign Up</p>
+            </>
           </span>
         )}
       </div>
