@@ -46,7 +46,34 @@
 .header-right button {
   margin-left: 10px;
 }
-
-.login-signup{
+.login-signup {
   padding-right: 50px;
+  display: flex;
+  gap: 1rem; /* Adjust the space between the elements as needed */
 }
+
+.login-signup p {
+  cursor: pointer;
+  color: black; /* Adjust color as needed */
+}
+
+
+.login-signup p.login:hover,
+.login-signup p.login:active {
+  text-decoration: underline; /* Optional: to give it a link-like appearance */
+  color: darkblue;
+}
+
+.login-signup p.signup:hover,
+.login-signup p.signup:active {
+  text-decoration: underline; /* Optional: to give it a link-like appearance */
+  color: darkblue;
+}
+
+.nanny:hover {
+  text-decoration: underline; /* Optional: to give it a link-like appearance */
+  cursor: pointer;
+  color: darkblue; /* Adjust color as needed */
+}
+
+
