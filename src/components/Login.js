@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { TextField, Button, Container } from "@mui/material";
+import Header from "./Header";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -20,7 +21,10 @@ const Login = () => {
   };
 
   return (
+    <div>
+    <Header />
     <Container>
+        
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <TextField
@@ -44,6 +48,7 @@ const Login = () => {
         </Button>
       </form>
     </Container>
+    </div>
   );
 };
 
