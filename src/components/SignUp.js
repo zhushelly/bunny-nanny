@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { TextField, Button, Container } from "@mui/material";
+import Header from "./Header";
 
 
 const SignUp = () => {
@@ -22,6 +23,8 @@ const SignUp = () => {
   };
 
   return (
+    <div>
+        <Header />
     <Container>
       <h2>Sign Up</h2>
       <form onSubmit={handleSignUp}>
@@ -44,6 +47,7 @@ const SignUp = () => {
         <Button type="submit" variant="contained" color="primary">Sign Up</Button>
       </form>
     </Container>
+    </div>
   );
 };
 

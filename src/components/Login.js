@@ -21,8 +21,10 @@ const Login = () => {
   };
 
   return (
+    <div>
+    <Header />
     <Container>
-        <Header />
+        
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <TextField
@@ -46,6 +48,7 @@ const Login = () => {
         </Button>
       </form>
     </Container>
+    </div>
   );
 };
 
