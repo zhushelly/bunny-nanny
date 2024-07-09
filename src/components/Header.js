@@ -22,13 +22,13 @@ const Header = ({ user }) => {
   return (
     <header className="header">
       <div className="header-left">
-          <p className = "nanny" onClick={() => handleNavigate('/login')}>Become a nanny</p>
+          <p className = "nanny" onClick={() => handleNavigate('/login')}>Become a Nanny</p>
       </div>
       <div className="header-right">
         {user ? (
           <>
-            <span>User ID: {user?.uid}</span>
-            <button onClick={handleLogout}>Logout</button>
+            <span class = "user-id">User ID: {user?.uid}</span>
+            <span class = "logout-button"><button onClick={handleLogout}>Logout</button></span>
           </>
         ) : (
           <span className="login-signup">
