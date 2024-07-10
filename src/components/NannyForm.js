@@ -3,6 +3,7 @@ import { db, storage } from '../firebase.js';
 import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import './styles/NannyForm.css';
+import Header from './Header.js';
 
 const NannyForm = () => {
   const [formData, setFormData] = useState({
@@ -63,7 +64,8 @@ const NannyForm = () => {
 
   return (
     <div>
-      <h1>Nanny Form</h1>
+      <Header />
+      <h1>Become a Bunny Nanny Application Form</h1>
       <div className="nanny-form-container">
         <form onSubmit={handleSubmit}>
 
