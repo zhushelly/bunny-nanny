@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { auth, db, serverTimestamp } from '../firebase';
 import Header from './Header';
 import './styles/Home.css';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { collection, addDoc } from 'firebase/firestore';
+import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
+
+const libraries = ['places'];
+const googleMapsApiKey = 'AIzaSyAtLs_X-NwhA_vTacF-oaf0DQM_RiPRirE'; // Replace with your Google Maps API key
 
 const UserHome = () => {
   const [user, setUser] = useState(null);
@@ -15,7 +19,8 @@ const UserHome = () => {
     pickUp: '',
   });
 
-  const navigate = useNavigate(); // Use the useNavigate hook
+  const searchBoxRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -24,7 +29,7 @@ const UserHome = () => {
       } else {
         setUser(null);
       }
-      setLoading(false); // Set loading to false after auth state is checked
+      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -53,12 +58,17 @@ const UserHome = () => {
       });
       console.log('Document written with ID: ', docRef.id);
       alert('Booking request submitted successfully!');
-      navigate('/search-results'); // Navigate to the search-results route
+      navigate('/search-results');
     } catch (error) {
       console.error('Error adding document: ', error);
       alert('There was an error submitting your request.');
     }
   };
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey,
+    libraries,
+  });
 
   if (loading) {
     return <div>Loading...</div>;
@@ -78,45 +88,61 @@ const UserHome = () => {
             <p>Book trusted bunny sitters.</p>
 
             <div className="search-form">
-              <form onSubmit={handleSubmit}>
+              {isLoaded ? (
+                <form onSubmit={handleSubmit}>
 
-                <div className="form-group">
-                  <label htmlFor="service-type">Service type:</label>
-                  <select id="service-type" value={formData.whenAway} onChange={handleInputChange}>
-                    <option value="boarding">Boarding</option>
-                    <option value="drop-in-visits">Drop-In Visits</option>
-                  </select>
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="service-type">Service type:</label>
+                    <select id="service-type" value={formData.whenAway} onChange={handleInputChange}>
+                      <option value="boarding">Boarding</option>
+                      <option value="drop-in-visits">Drop-In Visits</option>
+                    </select>
+                  </div>
 
-                <div className="form-group">
-                  <label htmlFor="location">Your location: </label>
-                  <input
-                    type="text"
-                    id="location"
-                    value={formData.location}
-                    onChange={handleInputChange}
-                    placeholder="Zip code or Address"
-                  />
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="location">Your location: </label>
+                    <StandaloneSearchBox
+                      onLoad={(ref) => {
+                        searchBoxRef.current = ref;
+                      }}
+                      onPlacesChanged={() => {
+                        const places = searchBoxRef.current.getPlaces();
+                        if (places.length > 0) {
+                          setFormData({ ...formData, location: places[0].formatted_address });
+                        }
+                      }}
+                    >
+                      <input
+                        type="text"
+                        id="location"
+                        value={formData.location}
+                        onChange={handleInputChange}
+                        placeholder="Zip code or Address"
+                      />
+                    </StandaloneSearchBox>
+                  </div>
 
-                <div className="form-group">
-                  <label htmlFor="dropOff">For these days:</label>
-                  <input
-                    type="date"
-                    id="dropOff"
-                    value={formData.dropOff}
-                    onChange={handleInputChange}
-                  />
-                  <input
-                    type="date"
-                    id="pickUp"
-                    value={formData.pickUp}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                
-                <button type="submit">Search</button>
-              </form>
+                  <div className="form-group">
+                    <label htmlFor="dropOff">For these days:</label>
+                    <input
+                      type="date"
+                      id="dropOff"
+                      value={formData.dropOff}
+                      onChange={handleInputChange}
+                    />
+                    <input
+                      type="date"
+                      id="pickUp"
+                      value={formData.pickUp}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  
+                  <button type="submit">Search</button>
+                </form>
+              ) : (
+                <div>Loading map...</div>
+              )}
             </div>
           </section>
         </div>

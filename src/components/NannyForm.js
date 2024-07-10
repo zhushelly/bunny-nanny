@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { db, storage } from '../firebase.js';
 import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import './styles/NannyForm.css';
 import Header from './Header.js';
+import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
+
+const libraries = ['places'];
+const googleMapsApiKey = 'AIzaSyAtLs_X-NwhA_vTacF-oaf0DQM_RiPRirE'; // Replace with your Google Maps API key
 
 const NannyForm = () => {
   const [formData, setFormData] = useState({
-    address1: '',
-    address2: '',
-    city: '',
-    state: '',
-    zip: '',
+    location: '',
     profilePhoto: null,
     mobilePhoneNumber: '',
     headline: '',
     petCareExperience: '',
   });
+
+  const searchBoxRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -46,11 +48,7 @@ const NannyForm = () => {
       alert('Form submitted successfully!');
       // Reset form if needed
       setFormData({
-        address1: '',
-        address2: '',
-        city: '',
-        state: '',
-        zip: '',
+        location: '',
         profilePhoto: null,
         mobilePhoneNumber: '',
         headline: '',
@@ -62,6 +60,15 @@ const NannyForm = () => {
     }
   };
 
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey,
+    libraries,
+  });
+
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       <Header />
@@ -70,32 +77,31 @@ const NannyForm = () => {
         <form onSubmit={handleSubmit}>
 
           <div className="form-group">
-            <label>Address Line 1:</label>
-            <input type="text" name="address1" value={formData.address1} onChange={handleChange} />
+            <label>Location:</label>
+            <StandaloneSearchBox
+              onLoad={(ref) => {
+                searchBoxRef.current = ref;
+              }}
+              onPlacesChanged={() => {
+                const places = searchBoxRef.current.getPlaces();
+                if (places.length > 0) {
+                  setFormData({ ...formData, location: places[0].formatted_address });
+                }
+              }}
+            >
+              <input
+                type="text"
+                id="location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                placeholder="Zip code or Address"
+              />
+            </StandaloneSearchBox>
           </div>
 
           <div className="form-group">
-            <label>Address Line 2:</label>
-            <input type="text" name="address2" value={formData.address2} onChange={handleChange} />
-          </div>
-
-          <div className="form-group">
-            <label>City:</label>
-            <input type="text" name="city" value={formData.city} onChange={handleChange} />
-          </div>
-
-          <div className="form-group">
-            <label>State or Province:</label>
-            <input type="text" name="state" value={formData.state} onChange={handleChange} />
-          </div>
-
-          <div className="form-group">
-            <label>ZIP/Postal Code:</label>
-            <input type="text" name="zip" value={formData.zip} onChange={handleChange} />
-          </div>
-
-          <div className="form-group">
-            <label>Profile Photo:</label>
+            <label>Profile photo:</label>
             <input type="file" name="profilePhoto" onChange={handleChange} />
           </div>
 
@@ -114,7 +120,6 @@ const NannyForm = () => {
             <input type="text" name="petCareExperience" value={formData.petCareExperience} onChange={handleChange} minLength="25"/>
           </div>
 
-          
           <button type="submit">Submit</button>
         </form>
       </div>
