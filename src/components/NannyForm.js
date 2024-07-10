@@ -13,13 +13,8 @@ const NannyForm = () => {
     zip: '',
     profilePhoto: null,
     mobilePhoneNumber: '',
-    emergencyContactName: '',
-    emergencyContactNumber: '',
-    householdMembers: '',
-    petCareExperience: '',
     headline: '',
-    petCareExperienceDetails: '',
-    pets: ''
+    petCareExperience: '',
   });
 
   const handleChange = (e) => {
@@ -57,13 +52,8 @@ const NannyForm = () => {
         zip: '',
         profilePhoto: null,
         mobilePhoneNumber: '',
-        emergencyContactName: '',
-        emergencyContactNumber: '',
-        householdMembers: '',
-        petCareExperience: '',
         headline: '',
-        petCareExperienceDetails: '',
-        pets: ''
+        petCareExperience: '',
       });
     } catch (error) {
       console.error('Error adding document: ', error);
@@ -113,48 +103,15 @@ const NannyForm = () => {
           </div>
 
           <div className="form-group">
-            <label>Emergency contact name:</label>
-            <input type="text" name="emergencyContactName" value={formData.emergencyContactName} onChange={handleChange} />
-          </div>
-
-          <div className="form-group">
-            <label>Emergency contact number:</label>
-            <input type="text" name="emergencyContactNumber" value={formData.emergencyContactNumber} onChange={handleChange} />
-          </div>
-
-          <div className="form-group">
-            <label>Household members authorized in emergency:</label>
-            <input type = "text" name="householdMembers" value={formData.householdMembers} onChange={handleChange}/>
-          </div>
-
-          <div className="form-group">
-            <label>Years of pet care experience:</label>
-            <input type="number" name="petCareExperience" value={formData.petCareExperience} onChange={handleChange} />
-          </div>
-
-          <div className="form-group">
             <label>Write an eye-catching headline:</label>
             <input type="text" name="headline" value={formData.headline} onChange={handleChange} />
           </div>
 
           <div className="form-group">
             <label>Pet care experience:</label>
-            <input type="text" name="petCareExperienceDetails" value={formData.petCareExperienceDetails} onChange={handleChange} minLength="25"/>
+            <input type="text" name="petCareExperience" value={formData.petCareExperience} onChange={handleChange} minLength="25"/>
           </div>
 
-          <div className="form-group">
-            <label>Do you have pets?</label>
-            <div>
-              <label>
-                <input type="radio" name="pets" value="yes" checked={formData.pets === 'yes'} onChange={handleChange} />
-                Yes
-              </label>
-              <label>
-                <input type="radio" name="pets" value="no" checked={formData.pets === 'no'} onChange={handleChange} />
-                No
-              </label>
-            </div>
-          </div>
           
           <button type="submit">Submit</button>
         </form>
