@@ -1,15 +1,18 @@
-import React, { useState, useRef } from 'react';
-import { db, storage } from '../firebase.js';
+import React, { useEffect, useState, useRef } from 'react';
+import { auth, db, storage, serverTimestamp } from '../firebase.js';
 import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import './styles/NannyForm.css';
 import Header from './Header.js';
 import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const libraries = ['places'];
 const googleMapsApiKey = 'AIzaSyAtLs_X-NwhA_vTacF-oaf0DQM_RiPRirE'; // Replace with your Google Maps API key
 
 const NannyForm = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     nannyName: '',
     location: '',
@@ -20,6 +23,20 @@ const NannyForm = () => {
   });
 
   const searchBoxRef = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -33,6 +50,11 @@ const NannyForm = () => {
     e.preventDefault();
     console.log('Submitting form with data:', formData);
 
+    if (!user) {
+      alert('You must be logged in to submit the form.');
+      return;
+    }
+
     try {
       let profilePhotoUrl = '';
       if (formData.profilePhoto) {
@@ -45,7 +67,9 @@ const NannyForm = () => {
 
       const dataToSubmit = {
         ...formData,
-        profilePhoto: profilePhotoUrl
+        profilePhoto: profilePhotoUrl,
+        userId: user.uid,
+        createdAt: serverTimestamp(),
       };
       console.log('Data to submit:', dataToSubmit);
 
@@ -60,6 +84,7 @@ const NannyForm = () => {
         petCareExperience: '',
         headline: '',
       });
+      navigate('/somewhere'); // Navigate to a different page after successful submission
     } catch (error) {
       console.error('Error adding document:', error);
       alert('Error submitting form, please try again.');
@@ -71,13 +96,21 @@ const NannyForm = () => {
     libraries,
   });
 
-  if (!isLoaded) {
+  if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/" />;
+  }
+
+  if (!isLoaded) {
+    return <div>Loading map...</div>;
   }
 
   return (
     <div>
-      <Header />
+      <Header user={user} />
       <h1>Become a Bunny Nanny Application Form</h1>
       <div className="nanny-form-container">
         <form onSubmit={handleSubmit}>
