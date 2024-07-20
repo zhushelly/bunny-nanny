@@ -11,11 +11,12 @@ const googleMapsApiKey = 'AIzaSyAtLs_X-NwhA_vTacF-oaf0DQM_RiPRirE'; // Replace w
 
 const NannyForm = () => {
   const [formData, setFormData] = useState({
+    nannyName: '',
     location: '',
     profilePhoto: null,
     mobilePhoneNumber: '',
-    headline: '',
     petCareExperience: '',
+    headline: '',
   });
 
   const searchBoxRef = useRef(null);
@@ -30,32 +31,37 @@ const NannyForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Submitting form with data:', formData);
 
     try {
       let profilePhotoUrl = '';
       if (formData.profilePhoto) {
         const photoRef = ref(storage, `profilePhotos/${formData.profilePhoto.name}`);
+        console.log('Uploading profile photo:', formData.profilePhoto.name);
         await uploadBytes(photoRef, formData.profilePhoto);
         profilePhotoUrl = await getDownloadURL(photoRef);
+        console.log('Profile photo uploaded, URL:', profilePhotoUrl);
       }
 
       const dataToSubmit = {
         ...formData,
         profilePhoto: profilePhotoUrl
       };
+      console.log('Data to submit:', dataToSubmit);
 
       await addDoc(collection(db, 'nanny'), dataToSubmit);
       alert('Form submitted successfully!');
       // Reset form if needed
       setFormData({
+        nannyName: '',
         location: '',
         profilePhoto: null,
         mobilePhoneNumber: '',
-        headline: '',
         petCareExperience: '',
+        headline: '',
       });
     } catch (error) {
-      console.error('Error adding document: ', error);
+      console.error('Error adding document:', error);
       alert('Error submitting form, please try again.');
     }
   };
@@ -77,6 +83,11 @@ const NannyForm = () => {
         <form onSubmit={handleSubmit}>
 
           <div className="form-group">
+            <label>Your name:</label>
+            <input type="text" name="nannyName" value={formData.nannyName} placeholder="Enter your name" onChange={handleChange} required />
+          </div>
+
+          <div className="form-group">
             <label>Location:</label>
             <StandaloneSearchBox
               onLoad={(ref) => {
@@ -95,29 +106,30 @@ const NannyForm = () => {
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                placeholder="Zip code or Address"
+                placeholder="Enter your zip code or address"
+                required
               />
             </StandaloneSearchBox>
           </div>
 
           <div className="form-group">
             <label>Profile photo:</label>
-            <input type="file" name="profilePhoto" onChange={handleChange} />
+            <input type="file" name="profilePhoto" onChange={handleChange} required />
           </div>
 
           <div className="form-group">
             <label>Mobile phone number:</label>
-            <input type="text" name="mobilePhoneNumber" value={formData.mobilePhoneNumber} onChange={handleChange} />
-          </div>
-
-          <div className="form-group">
-            <label>Write an eye-catching headline:</label>
-            <input type="text" name="headline" value={formData.headline} onChange={handleChange} />
+            <input type="text" name="mobilePhoneNumber" value={formData.mobilePhoneNumber} placeholder="Enter your phone number" onChange={handleChange} required />
           </div>
 
           <div className="form-group">
             <label>Pet care experience:</label>
-            <input type="text" name="petCareExperience" value={formData.petCareExperience} onChange={handleChange} minLength="25"/>
+            <input type="text" name="petCareExperience" value={formData.petCareExperience} placeholder="Please briefly describe your relevant experience" onChange={handleChange} minLength="25" required />
+          </div>
+
+          <div className="form-group">
+            <label>Write an eye-catching headline:</label>
+            <input type="text" name="headline" value={formData.headline} placeholder="Enter a headline that you want to show on your profile" onChange={handleChange} required />
           </div>
 
           <button type="submit">Submit</button>
