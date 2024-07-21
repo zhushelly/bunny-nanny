@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { auth } from '../firebase';
 import Header from './Header';
 import './styles/Home.css';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
+import { useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
+import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
 
 const libraries = ['places'];
 const googleMapsApiKey = 'AIzaSyAtLs_X-NwhA_vTacF-oaf0DQM_RiPRirE'; // Replace with your Google Maps API key
@@ -50,19 +50,21 @@ const UserHome = () => {
       return;
     }
 
+    console.log('Form data to be sent:', formData);
+
     try {
       const response = await axios.get('http://localhost:3001/api/nannies', {
         params: {
           lat: formData.lat,
           lng: formData.lng,
-          radius: 20, // Example radius in miles
+          radius: 20, 
         },
       });
 
-      console.log('Response from backend:', response.data);
+      const nannies = response.data;
+      console.log('Nannies found:', nannies);
 
-      // Navigate to search results with the response data
-      navigate('/search-results', { state: { nannies: response.data } });
+      navigate('/search-results', { state: { nannies } });
     } catch (error) {
       console.error('Error fetching nannies:', error);
       alert('There was an error fetching nannies.');
@@ -94,7 +96,6 @@ const UserHome = () => {
             <div className="search-form">
               {isLoaded ? (
                 <form onSubmit={handleSubmit}>
-
                   <div className="form-group">
                     <label htmlFor="service-type">Service type:</label>
                     <select id="service-type" value={formData.whenAway} onChange={handleInputChange}>
@@ -147,7 +148,7 @@ const UserHome = () => {
                       onChange={handleInputChange}
                     />
                   </div>
-                  
+
                   <button type="submit">Search</button>
                 </form>
               ) : (
