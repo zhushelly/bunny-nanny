@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { auth, db, serverTimestamp } from '../firebase';
+import { auth } from '../firebase';
 import Header from './Header';
 import './styles/Home.css';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { collection, addDoc } from 'firebase/firestore';
 import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
+import axios from 'axios';
 
 const libraries = ['places'];
 const googleMapsApiKey = 'AIzaSyAtLs_X-NwhA_vTacF-oaf0DQM_RiPRirE'; // Replace with your Google Maps API key
@@ -15,6 +15,8 @@ const UserHome = () => {
   const [formData, setFormData] = useState({
     whenAway: '',
     location: '',
+    lat: null,
+    lng: null,
     dropOff: '',
     pickUp: '',
   });
@@ -48,20 +50,22 @@ const UserHome = () => {
       return;
     }
 
-    console.log('Form data to be sent:', formData);
-
     try {
-      const docRef = await addDoc(collection(db, 'bookings'), {
-        ...formData,
-        userId: user.uid,
-        createdAt: serverTimestamp(),
+      const response = await axios.get('http://localhost:3001/api/nannies', {
+        params: {
+          lat: formData.lat,
+          lng: formData.lng,
+          radius: 20, // Example radius in miles
+        },
       });
-      console.log('Document written with ID: ', docRef.id);
-      alert('Booking request submitted successfully!');
-      navigate('/search-results');
+
+      console.log('Response from backend:', response.data);
+
+      // Navigate to search results with the response data
+      navigate('/search-results', { state: { nannies: response.data } });
     } catch (error) {
-      console.error('Error adding document: ', error);
-      alert('There was an error submitting your request.');
+      console.error('Error fetching nannies:', error);
+      alert('There was an error fetching nannies.');
     }
   };
 
@@ -108,7 +112,13 @@ const UserHome = () => {
                       onPlacesChanged={() => {
                         const places = searchBoxRef.current.getPlaces();
                         if (places.length > 0) {
-                          setFormData({ ...formData, location: places[0].formatted_address });
+                          const place = places[0];
+                          setFormData({
+                            ...formData,
+                            location: place.formatted_address,
+                            lat: place.geometry.location.lat(),
+                            lng: place.geometry.location.lng(),
+                          });
                         }
                       }}
                     >

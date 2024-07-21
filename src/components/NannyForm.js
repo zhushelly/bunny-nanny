@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { auth, db, storage, serverTimestamp } from '../firebase.js';
+import { auth, db, storage, serverTimestamp, GeoPoint } from '../firebase.js';
 import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import './styles/NannyForm.css';
@@ -16,6 +16,8 @@ const NannyForm = () => {
   const [formData, setFormData] = useState({
     nannyName: '',
     location: '',
+    lat: null,
+    lng: null,
     profilePhoto: null,
     mobilePhoneNumber: '',
     petCareExperience: '',
@@ -67,6 +69,7 @@ const NannyForm = () => {
 
       const dataToSubmit = {
         ...formData,
+        location: new GeoPoint(formData.lat, formData.lng), // Store GeoPoint here
         profilePhoto: profilePhotoUrl,
         userId: user.uid,
         createdAt: serverTimestamp(),
@@ -79,6 +82,8 @@ const NannyForm = () => {
       setFormData({
         nannyName: '',
         location: '',
+        lat: null,
+        lng: null,
         profilePhoto: null,
         mobilePhoneNumber: '',
         petCareExperience: '',
@@ -129,7 +134,14 @@ const NannyForm = () => {
               onPlacesChanged={() => {
                 const places = searchBoxRef.current.getPlaces();
                 if (places.length > 0) {
-                  setFormData({ ...formData, location: places[0].formatted_address });
+                  const place = places[0];
+                  setFormData({
+                    ...formData,
+                    location: place.formatted_address,
+                    lat: place.geometry.location.lat(),
+                    lng: place.geometry.location.lng(),
+                  });
+                  console.log('Location set:', place.geometry.location.lat(), place.geometry.location.lng()); // Debugging line
                 }
               }}
             >
