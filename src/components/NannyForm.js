@@ -8,7 +8,7 @@ import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
 import { Navigate, useNavigate } from 'react-router-dom';
 
 const libraries = ['places'];
-const googleMapsApiKey = REACT_APP_GOOGLE_MAPS_API_KEY; // Replace with your Google Maps API key
+const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY; // Replace with your Google Maps API key
 
 const NannyForm = () => {
   const [user, setUser] = useState(null);
