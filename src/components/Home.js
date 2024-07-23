@@ -83,8 +83,8 @@ const Home = () => {
         ) : (
           <div className="home-container">
             <section className="hero-section">
-              <h1>Loving pet care in your neighborhood!</h1>
-              <p>Book trusted bunny sitters.</p>
+              <h1>Being away? Find care for your bunny in your neighborhood!</h1>
+              <p>Book with trusted sitters.</p>
 
               <div className="search-form">
                 {isLoaded ? (
