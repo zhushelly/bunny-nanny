@@ -7,7 +7,7 @@ import axios from 'axios';
 import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
 
 const libraries = ['places'];
-const googleMapsApiKey = 'AIzaSyAtLs_X-NwhA_vTacF-oaf0DQM_RiPRirE'; // Replace with your Google Maps API key
+const googleMapsApiKey = REACT_APP_GOOGLE_MAPS_API_KEY; // Replace with your Google Maps API key
 
 const UserHome = () => {
   const [user, setUser] = useState(null);
