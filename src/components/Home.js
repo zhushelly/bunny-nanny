@@ -3,7 +3,7 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import Header from './Header';
 import './styles/Home.css';
-import axios from 'axios';
+import apiService from '../services/api';
 import { useLoadScript, StandaloneSearchBox } from '@react-google-maps/api';
 
 const libraries = ['places'];
@@ -51,21 +51,13 @@ const Home = () => {
     console.log('Form data to be sent:', formData);
 
     try {
-      const response = await axios.get('http://localhost:3001/api/nannies', {
-        params: {
-          lat: formData.lat,
-          lng: formData.lng,
-          radius: 20,
-        },
-      });
-
-      const nannies = response.data;
+      const nannies = await apiService.getNannies(formData.lat, formData.lng, 20);
       console.log('Nannies found:', nannies);
 
       navigate('/search-results', { state: { nannies } });
     } catch (error) {
       console.error('Error fetching nannies:', error);
-      alert('There was an error fetching nannies.');
+      alert('There was an error fetching nannies. Please try again later.');
     }
   };
 
@@ -83,7 +75,7 @@ const Home = () => {
         ) : (
           <div className="home-container">
             <section className="hero-section">
-              <h1>Being away? Find care for your bunny in your neighborhood!</h1>
+              <h1>Away from home? Find care for your bunny in your neighborhood!</h1>
               <p>Book with trusted sitters.</p>
 
               <div className="search-form">

@@ -2,13 +2,41 @@ const express = require('express');
 const cors = require('cors');
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore, GeoPoint } = require('firebase-admin/firestore');
-const serviceAccount = require('./serviceAccountKey.json'); // Path to your service account key
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
+
+// Load Firebase service account from environment or file
+let serviceAccount;
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  // In production, parse from environment variable
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+} else {
+  // In development, load from file
+  serviceAccount = require('./serviceAccountKey.json');
+}
+
+// CORS configuration
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(',')
+      : ['http://localhost:3000'];
+
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+};
 
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Initialize Firebase Admin
@@ -33,6 +61,11 @@ async function logNanniesCollection() {
 }
 
 logNanniesCollection(); // Log the contents on startup
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
+});
 
 // API endpoint to get nannies within proximity
 app.get('/api/nannies', async (req, res) => {
@@ -82,6 +115,17 @@ app.get('/api/nannies', async (req, res) => {
   }
 });
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  if (err.message === 'Not allowed by CORS') {
+    res.status(403).json({ error: 'CORS policy violation' });
+  } else {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
